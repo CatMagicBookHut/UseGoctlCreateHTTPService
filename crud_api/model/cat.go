@@ -1,10 +1,10 @@
 package model
 
 import (
+	"crud_api/utils/errmsg"
 	"fmt"
 )
 
-// Cat对象
 type Cat struct {
 	Uid  uint   `gorm:"primaryKey" json:"uid"`
 	Name string `gorm:"varchar(100);not null" json:"name"`
@@ -15,9 +15,9 @@ type Cat struct {
 func CreateCat(cat Cat) int {
 	err := db.Create(&cat).Error
 	if err != nil {
-		return 500
+		return errmsg.ERROR
 	}
-	return 200
+	return errmsg.SUCCESS
 }
 
 // 查询猫猫信息
@@ -26,9 +26,9 @@ func QueryCat(uid uint) (Cat, int) {
 	err := db.Where("uid=?", uid).Find(&cat).Error
 	if err != nil || cat.Name == "" {
 		fmt.Println("查询失败")
-		return cat, 500
+		return cat, errmsg.ERROR
 	}
-	return cat, 200
+	return cat, errmsg.SUCCESS
 }
 
 // 修改猫猫信息
@@ -40,21 +40,21 @@ func EditCat(cat Cat) int {
 	var c Cat
 	err = db.Model(&c).Where("uid=?", cat.Uid).Updates(catMaps).Error
 	if err != nil {
-		return 500
+		return errmsg.ERROR
 	}
-	return 200
+	return errmsg.SUCCESS
 }
 
 // 删除猫猫信息
 func DeleteCat(uid uint) int {
 	var cat Cat
 	_, e := QueryCat(uid)
-	if e != 200 {
+	if e != errmsg.SUCCESS {
 		return e
 	}
 	err := db.Where("uid=?", uid).Unscoped().Delete(&cat).Error
 	if err != nil {
-		return 500
+		return errmsg.ERROR
 	}
-	return 200
+	return errmsg.SUCCESS
 }
