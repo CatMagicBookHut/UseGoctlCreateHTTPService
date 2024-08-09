@@ -1,0 +1,35 @@
+type (
+	// 通过uid对猫猫进行操作
+	CatReq {
+		Uid uint `path:"uid"`
+	}
+	CatReqPost {
+		Uid uint `json:"uid"`
+	}
+
+	// 完整的猫猫数据结构体
+	Cat {
+		Uid  uint   `json:"uid"`
+		Name string `json:"name"`
+		Age  int    `json:"age"`
+	}
+
+	// 错误信息返回
+	ErrResp {
+		Err int `json:"err"`
+	}
+)
+
+service crud_api-api {
+	@handler GetCat
+	get /query/:uid(CatReq) returns (Cat)
+	
+	@handler NewCat
+	post /newcat (Cat) returns (ErrResp)
+	
+	@handler EditCat
+	post /editcat (Cat) returns (ErrResp)
+	
+	@handler DeleteCat
+	post /deletecat (CatReqPost) returns (ErrResp)
+}
